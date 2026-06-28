@@ -1,4 +1,4 @@
---// Full Enhanced Teleport GUI - Infinite Yield Restored
+--// Full Enhanced Teleport GUI - Collect All (All Floors)
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
@@ -20,6 +20,7 @@ local noclip = false
 local flying = false
 local flySpeed = 60
 local walkspeed = 16
+local collectAll = false
 
 local jumpConnection = nil
 local noclipConnection = nil
@@ -191,51 +192,34 @@ createButton(teleScroll, "🏠 Home", function()
     if root then
         local plotsFolder = workspace:FindFirstChild("Plots")
         if plotsFolder then
-            print("Plots folder found. Checking Plots 1-5...")
             for i = 1, 5 do
                 local plot = plotsFolder:FindFirstChild(tostring(i))
                 if plot then
-                    print("Found Plot " .. i)
                     local ownerValue = plot:FindFirstChild("Owner")
-                    if ownerValue then
-                        print("Owner Value found: " .. tostring(ownerValue.Value))
-                        if ownerValue.Value == player.Name then
-                            print("This is your plot! Teleporting...")
-                            local plotRoot = plot:FindFirstChild("HumanoidRootPart") or plot:FindFirstChildWhichIsA("BasePart")
-                            if plotRoot then
-                                root.CFrame = plotRoot.CFrame + Vector3.new(0, 5, 0)
-                                print("Teleported successfully!")
-                                return
-                            else
-                                print("No root part found in plot")
-                            end
+                    if ownerValue and ownerValue.Value == player.Name then
+                        local plotRoot = plot:FindFirstChild("HumanoidRootPart") or plot:FindFirstChildWhichIsA("BasePart")
+                        if plotRoot then
+                            root.CFrame = plotRoot.CFrame + Vector3.new(0, 5, 0)
+                            return
                         end
-                    else
-                        print("No Owner Value in Plot " .. i)
                     end
-                else
-                    print("Plot " .. i .. " not found")
                 end
             end
-            print("No matching plot found. Using fallback.")
-        else
-            print("No Plots folder found!")
         end
-        -- Fallback
         root.CFrame = CFrame.new(-14, 6, 135.25)
     end
 end)
 
-createButton(teleScroll, "⚪ Common", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(155,5.5,-5) end end)
-createButton(teleScroll, "🟢 Uncommon", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(375,95.5,-5) end end)
-createButton(teleScroll, "🔵 Rare", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(595,235.5,-5) end end)
-createButton(teleScroll, "🟣 Epic", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(815,455.5,-5) end end)
-createButton(teleScroll, "🟡 Legendary", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1035,715.5,-5) end end)
-createButton(teleScroll, "🔴 Mythic", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1255,1015.5,-5) end end)
-createButton(teleScroll, "👑 God", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1475,1365.5,-5) end end)
-createButton(teleScroll, "🌌 Secret", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1695,1705.5,-5) end end)
-createButton(teleScroll, "⭐ OG", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1915,2142.5,-5) end end)
-createButton(teleScroll, "💎 Prismatic", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(2135,2695.5,-5) end end)
+createButton(teleScroll, "⚪ Common", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(155,7.5,-5) end end)
+createButton(teleScroll, "🟢 Uncommon", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(375,97.5,-5) end end)
+createButton(teleScroll, "🔵 Rare", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(595,237.5,-5) end end)
+createButton(teleScroll, "🟣 Epic", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(815,457.5,-5) end end)
+createButton(teleScroll, "🟡 Legendary", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1035,717.5,-5) end end)
+createButton(teleScroll, "🔴 Mythic", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1255,1017.5,-5) end end)
+createButton(teleScroll, "👑 God", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1475,1367.5,-5) end end)
+createButton(teleScroll, "🌌 Secret", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1695,1707.5,-5) end end)
+createButton(teleScroll, "⭐ OG", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1915,2147.5,-5) end end)
+createButton(teleScroll, "💎 Prismatic", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(2135,2697.5,-5) end end)
 
 -- Toggle Function
 local function createToggle(parent, text, default, callback)
@@ -327,6 +311,70 @@ createToggle(togScroll, "Noclip", false, function(v)
         if character then
             for _, p in pairs(character:GetDescendants()) do
                 if p:IsA("BasePart") then p.CanCollide = true end
+            end
+        end
+    end
+end)
+
+-- Collect All
+createToggle(togScroll, "Collect All", false, function(v)
+    collectAll = v
+end)
+
+-- Auto Collect Loop
+spawn(function()
+    while true do
+        if collectAll then
+            local plotsFolder = workspace:FindFirstChild("Plots")
+            if plotsFolder then
+                for i = 1, 5 do
+                    local plot = plotsFolder:FindFirstChild(tostring(i))
+                    if plot then
+                        local ownerValue = plot:FindFirstChild("Owner")
+                        if ownerValue and ownerValue.Value == player.Name then
+                            local base = plot:FindFirstChild("Base")
+                            if base then
+                                for floor = 0, 10 do  -- Check floors 0 to 10
+                                    local floorFolder = base:FindFirstChild(tostring(floor))
+                                    if floorFolder then
+                                        local slots = floorFolder:FindFirstChild("Slots")
+                                        if slots then
+                                            for slotNum = 1, 30 do
+                                                local slotFolder = slots:FindFirstChild(tostring(slotNum))
+                                                if slotFolder then
+                                                    local slot = slotFolder:FindFirstChild("Slot")
+                                                    if slot then
+                                                        local collect = slot:FindFirstChild("Collect")
+                                                        if collect then
+                                                            local root = character:FindFirstChild("HumanoidRootPart")
+                                                            if root then
+                                                                firetouchinterest(collect, root, 0)
+                                                                wait(0.03)
+                                                                firetouchinterest(collect, root, 1)
+                                                            end
+                                                        end
+                                                    end
+                                                end
+                                            end
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        wait(2) -- 2 second delay after each full cycle
+    end
+end)
+
+-- Instant Proximity Prompts
+RunService.Heartbeat:Connect(function()
+    if instantProximity then
+        for _, v in ipairs(workspace:GetDescendants()) do
+            if v:IsA("ProximityPrompt") then
+                v.HoldDuration = 0
             end
         end
     end
@@ -546,4 +594,4 @@ RunService.RenderStepped:Connect(function()
     bodyGyro.CFrame = cam
 end)
 
-print("✅ Infinite Yield added back in Settings!")
+print("✅ Collect All now checks all floors (0, 1, 2, ...)!")
