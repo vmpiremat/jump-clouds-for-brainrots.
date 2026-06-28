@@ -1,4 +1,4 @@
---// Full Enhanced Teleport GUI - Fixed Instant Proximity
+--// Full Enhanced Teleport GUI - Infinite Yield Restored
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local RunService = game:GetService("RunService")
@@ -226,16 +226,16 @@ createButton(teleScroll, "🏠 Home", function()
     end
 end)
 
-createButton(teleScroll, "⚪ Common", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(155,7.5,-5) end end)
-createButton(teleScroll, "🟢 Uncommon", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(375,97.5,-5) end end)
-createButton(teleScroll, "🔵 Rare", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(595,237.5,-5) end end)
-createButton(teleScroll, "🟣 Epic", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(815,457.5,-5) end end)
-createButton(teleScroll, "🟡 Legendary", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1035,717.5,-5) end end)
-createButton(teleScroll, "🔴 Mythic", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1255,1017.5,-5) end end)
-createButton(teleScroll, "👑 God", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1475,1367.5,-5) end end)
-createButton(teleScroll, "🌌 Secret", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1695,1707.5,-5) end end)
-createButton(teleScroll, "⭐ OG", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1915,2145.5,-5) end end)
-createButton(teleScroll, "💎 Prismatic", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(2135,2697.5,-5) end end)
+createButton(teleScroll, "⚪ Common", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(155,5.5,-5) end end)
+createButton(teleScroll, "🟢 Uncommon", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(375,95.5,-5) end end)
+createButton(teleScroll, "🔵 Rare", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(595,235.5,-5) end end)
+createButton(teleScroll, "🟣 Epic", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(815,455.5,-5) end end)
+createButton(teleScroll, "🟡 Legendary", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1035,715.5,-5) end end)
+createButton(teleScroll, "🔴 Mythic", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1255,1015.5,-5) end end)
+createButton(teleScroll, "👑 God", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1475,1365.5,-5) end end)
+createButton(teleScroll, "🌌 Secret", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1695,1705.5,-5) end end)
+createButton(teleScroll, "⭐ OG", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(1915,2142.5,-5) end end)
+createButton(teleScroll, "💎 Prismatic", function() local r = character:FindFirstChild("HumanoidRootPart") if r then r.CFrame = CFrame.new(2135,2695.5,-5) end end)
 
 -- Toggle Function
 local function createToggle(parent, text, default, callback)
@@ -300,10 +300,7 @@ local function createToggle(parent, text, default, callback)
     update()
 end
 
-createToggle(togScroll, "Instant Proximity", false, function(v) 
-    instantProximity = v 
-    print("Instant Proximity " .. (v and "ENABLED" or "DISABLED"))
-end)
+createToggle(togScroll, "Instant Proximity", false, function(v) instantProximity = v end)
 createToggle(togScroll, "Infinite Jump", false, function(v)
     infiniteJump = v
     if v then
@@ -475,6 +472,20 @@ changeBtn.MouseButton1Click:Connect(function()
     end)
 end)
 
+-- Infinite Yield Button
+local iyButton = Instance.new("TextButton")
+iyButton.Size = UDim2.new(1, -20, 0, 42)
+iyButton.BackgroundColor3 = Color3.fromRGB(45,45,45)
+iyButton.Text = "Infinite Yield"
+iyButton.Font = Enum.Font.Gotham
+iyButton.TextColor3 = Color3.new(1,1,1)
+iyButton.TextScaled = true
+iyButton.Parent = setScroll
+
+iyButton.MouseButton1Click:Connect(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+end)
+
 -- Tab Switching
 teleTab.MouseButton1Click:Connect(function() teleScroll.Visible = true; togScroll.Visible = false; movScroll.Visible = false; setScroll.Visible = false end)
 togTab.MouseButton1Click:Connect(function() teleScroll.Visible = false; togScroll.Visible = true; movScroll.Visible = false; setScroll.Visible = false end)
@@ -513,17 +524,6 @@ end)
 
 miniButton.MouseButton1Click:Connect(toggleGUI)
 
--- Instant Proximity Prompts (Fixed)
-RunService.Heartbeat:Connect(function()
-    if instantProximity then
-        for _, v in ipairs(workspace:GetDescendants()) do
-            if v:IsA("ProximityPrompt") then
-                v.HoldDuration = 0
-            end
-        end
-    end
-end)
-
 -- Fly Logic
 RunService.RenderStepped:Connect(function()
     if not flying then return end
@@ -546,4 +546,4 @@ RunService.RenderStepped:Connect(function()
     bodyGyro.CFrame = cam
 end)
 
-print("✅ Instant Proximity Prompts should now work!")
+print("✅ Infinite Yield added back in Settings!")
